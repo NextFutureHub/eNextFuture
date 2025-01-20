@@ -1,34 +1,39 @@
+// server/src/index.js
 const express = require("express");
-const mongoose = require("mongoose");
+const sequelize = require("./db");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const Product = require("./models/Product");
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs");
 
-dotenv.config(); // Подключение переменных окружения
+dotenv.config();
 
 const app = express();
-app.use(cors()); // Для обработки кросс-доменных запросов
-app.use(express.json()); // Для обработки JSON-данных
+app.use(cors());
+app.use(express.json());
 
-// Подключение к MongoDB
-mongoose
-  .connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log("MongoDB Connected"))
-  .catch((err) => console.log(err));
+if (!fs.existsSync("uploads")) {
+  fs.mkdirSync("uploads");
+}
 
-// Простой роут для проверки
+sequelize
+  .authenticate()
+  .then(() => console.log("Connected to SQL"))
+  .catch((err) => console.log("Error: " + err));
+
+sequelize.sync({ alter: true })
+  .then(() => console.log("DB sync"))
+  .catch((err) => console.log("Error: " + err));
+
 app.get("/", (req, res) => {
   res.send("Welcome to the server");
 });
 
 app.get("/products", async (req, res) => {
   try {
-    const products = await Product.find();
+    const products = await Product.findAll();
     res.status(200).json(products);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -40,28 +45,23 @@ const storage = multer.diskStorage({
     cb(null, "uploads/");
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); // Создаем уникальное имя файла
+    cb(null, Date.now() + path.extname(file.originalname));
   },
 });
 
 const upload = multer({ storage });
 
-// Маршрут для загрузки товара
 app.post("/products", upload.single("image"), async (req, res) => {
   const { name, description, price } = req.body;
-  const image = req.file ? `/uploads/${req.file.filename}` : ""; // Путь к изображению
+  const image = req.file ? `/uploads/${req.file.filename}` : "";
 
   try {
-    // Создаем новый товар
-    const newProduct = new Product({
+    const newProduct = await Product.create({
       name,
       description,
       price,
       image,
     });
-
-    // Сохраняем товар в базе данных
-    await newProduct.save();
 
     res.status(201).json(newProduct);
   } catch (err) {
@@ -70,6 +70,5 @@ app.post("/products", upload.single("image"), async (req, res) => {
 });
 app.use("/uploads", express.static("uploads"));
 
-// Запуск сервера
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

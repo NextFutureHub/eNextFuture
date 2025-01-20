@@ -1,6 +1,5 @@
 import { createStore } from 'redux';
 
-// Простая редукс-редьюсс функция
 const initialState = {
   products: []
 };

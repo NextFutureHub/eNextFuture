@@ -1,0 +1,94 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+*{
+    margin: 0;
+    padding: 0;
+}
+
+.background-svg{
+    background-image: url('C:\Users\User\Desktop\eNextFuture\client\public\logo--white.svg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100vh;
+    width: 100%;
+}
+main{
+    background-color: #f1b84b;
+    header{
+        font-family: "Montserrat", serif;
+        
+
+    
+        .header{
+            display: flex;
+            padding: 20px;
+            justify-content: space-between;
+            .logo{
+                p{
+                    font-size: 25px;
+                }
+            }
+            .menu{
+                ul{
+                    display: flex;
+                    li{
+                        margin-right: 10px;
+                        list-style: none;
+                        a{
+                            text-decoration: none;
+                            color: black;
+                            font-size: 20px;
+                        }
+                        a:hover{
+                            color: orange;
+                        }
+    
+                        .active-link{
+                            border-bottom: 1px solid orange;
+                        }
+                    }
+    
+    
+                }
+            }
+            .panel{
+                display: flex;
+                align-items: center;
+                button{
+                    background-color: white;
+                    padding: 8px;
+                    margin-right: 10px;
+                    a{
+    
+                    }
+                }
+    
+                .admin{
+                    display: flex;
+                    align-items: center;
+                    a{
+                        margin-right: 10px;
+                        text-decoration: none;
+                        color: black;
+                        font-size: 16px;
+                    }
+                    p{
+    
+                    }
+                }
+            }
+        }
+    
+        .hero{
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            margin-top: 200px;
+            p{
+                color: white;
+                line-height: 1.2;
+            }
+        }
+    }
+}
